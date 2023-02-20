@@ -1,0 +1,56 @@
+<!doctype html>
+<title>Search Page</title>
+<form method="post">
+    <div>
+        <select name='area' id='area'>
+            <option value='select'>Select area of the player</option> 
+            <option value='Africa'>Africa</option>
+            <option value='Asia_Pacific'>Asia Pacific</option>
+            <option value='Europe'>Europe</option>
+            <option value='South_America'>South America</option>
+            <option value='North_America'>North America</option>
+        </select>
+    </div>
+
+    <div>
+        <select name='position' id='position' multiple>
+            <option value='select'>Select player position</option> 
+            <optgroup label="Forward">
+                <option value='cf'>CF</option>
+                <option value='ls'>LS</option>
+                <option value='rs'>RS</option>
+                <option value='lw'>LW</option>
+                <option value='rw'>RW</option>
+                <option value='ss'>SS</option>
+            </optgroup>
+            <optgroup label="Midfielder">
+                <option value='cam'>CAM</option>
+                <option value='lm'>LM</option>
+                <option value='rm'>RM</option>
+                <option value='rcm'>RCM</option>
+                <option value='lcm'>LCM</option>
+                <option value='cm'>CM</option>
+                <option value='cdm'>CDM</option>
+            </optgroup>
+            <optgroup label="Defender">
+                <option value='cb'>CB</option>
+                <option value='lb'>LB</option>
+                <option value='rb'>RB</option>
+                <option value='lcb'>LCB</option>
+                <option value='rcb'>RCB</option>
+                <option value='sw'>SW</option>
+            </optgroup>
+            <optgroup label="Goalkeeper">
+                <option value='gk'>GK</option>
+            </optgroup>
+        </select>
+    </div>
+
+    <div>
+        <input type="range" name="age" id='age' min="15" max="40">
+        <label for='age'>Age</label>
+    </div>
+
+
+    <input class="btn" type="submit" name="submit" value="Search">
+</form>

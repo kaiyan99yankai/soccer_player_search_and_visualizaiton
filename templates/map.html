@@ -1,0 +1,12 @@
+<!doctype html>
+<head>
+    <title>Map Page</title>
+</head>
+<body>
+    <ul>
+        {% for player in players %}
+            <li><a href="{{ url_for('player', name=player.name) }}">{{player.name}}</a></li>
+        {% endfor %}
+    </ul>
+    
+</body>
