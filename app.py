@@ -17,6 +17,9 @@ def search():
         position = request.form.get('position')
         age = request.form.get('age')
         #pass the result to the backend worker
+
+        #should be down with celery
+
         #after the backend workder return the value, show that on the new template
         playerlist = {'players':[{'name': 'Kaiyan', 'x': 0, 'y': 0}]}
         return render_template('map.html', **playerlist)
