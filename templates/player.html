@@ -4,9 +4,10 @@
 </head>
 <body>
     <ul>
-        <li>{{name}}</li>
-        <li>{{age}}</li>
-        <li>{{position}}</li>
+        {% for k in playerdata %}
+            <li>{{k}}: {{playerdata[k]}}</li>
+        {% endfor %}
+        <!-- <li>{{playerdata['Name']}}</li> -->
     </ul>
     
 </body>

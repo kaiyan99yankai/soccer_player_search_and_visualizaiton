@@ -3,10 +3,10 @@
     <title>Map Page</title>
 </head>
 <body>
-    <ul>
-        {% for player in players %}
-            <li><a href="{{ url_for('player', name=player.name) }}">{{player.name}}</a></li>
+    <div style="margin:auto; width: {{width}}px; height: {{height}}px">
+        {% for player in playerdata['Name'] %}
+            <a style="position: relative; top: {{playerdata['point0'][player]}}px; left: {{playerdata['point1'][player]}}px" href="{{ url_for('player', name=playerdata['Name'][player]) }}">{{playerdata['Name'][player]}}</a>
         {% endfor %}
-    </ul>
+    </div>
     
 </body>
