@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Search Page</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <form method="post">
+      <div>
+        <input type="number" id="bot" name="bot">
+        <label for='bot'>Base value</label>
+      </div>
+      <div>
+        <input type="number" id="top" name="top">
+        <label for='top'>Top value</label>
+      </div>
+      <div>
+        <select name='position' id='position'>
+          <option value='select'>Select player from position</option> 
+          <option value='ST'>ST</option>
+          <option value='GK'>GK</option>
+          <option value='D'>D</option>
+          <option value='M'>M</option>
+          <option value='AM'>AM</option>
+        </select>
+      </div>
+
+      <input class="btn" type="submit" name="submit" value="Search">
+    </form>
+  </body>
+</html>

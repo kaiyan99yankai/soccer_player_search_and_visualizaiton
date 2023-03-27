@@ -44,7 +44,7 @@ def create_visualization(value_down, value_up, position, font_size):
     ])
     # print(len(player_attributes.iloc[0]))
     player_attributes_pca = pipe.fit_transform(player_attributes)
-    print(player_attributes_pca)
+    # print(player_attributes_pca)
     pca1 = np.array([point[1] for point in player_attributes_pca])
     pca0 = np.array([point[0] for point in player_attributes_pca])
     print(pipe['pca'].explained_variance_ratio_)
@@ -82,13 +82,9 @@ def create_visualization(value_down, value_up, position, font_size):
 
 app = Flask(__name__)
 
-@app.route('/')
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return """
-    <h1>Soccer Search Engine</h1>
-    """
-@app.route('/search', methods=['GET', 'POST'])
-def search():
     #search page of the players
     if request.method == 'POST':
         bot = int(request.form.get('bot'))
@@ -101,8 +97,8 @@ def search():
         #after the backend workder return the value, show that on the new template
         data = create_visualization(bot, top, position, 12)
 
-        return render_template('map.html', width=data['canvas_width'], height=data['canvas_height'], playerdata=data['players'])
-    return render_template('search.html')
+        return render_template("map.html", width=data['canvas_width'], height=data['canvas_height'], playerdata=data['players'])
+    return render_template('index.html')
 
 @app.route('/player?name=<name>')
 def player(name):
@@ -117,7 +113,6 @@ def player(name):
         playerdata[col_name_list[i]] = res[i]
     return render_template('player.html', playerdata=playerdata)
 
- 
 
 
 if __name__ == '__main__':
