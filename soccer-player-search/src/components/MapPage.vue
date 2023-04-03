@@ -1,100 +1,129 @@
 <template>
-  <div ref="tooltip" class="tooltip" v-if="showTooltip" :style="{ top: tooltipY + 'px', left: tooltipX + 'px' }">{{ tooltipContent }}</div>
-  <div class="map-container">
-    <div>
-      <p v-if="loading">Loading...</p>
-      <div v-else :style="{ margin: 'auto', width: `${width}px`, height: `${height}px` }">
-        <a
-          v-for="(name, key) in players.Name"
-          :key="key"
-          :style="{
-            position: 'absolute',
-            top: players.point1[key] + 'px',
-            left: players.point0[key] + 'px',
-            backgroundColor: 'blue',
-            width: '10px',
-            height: '10px',
-            borderRadius: '50%',
-          }"
-          class="glowing"
-          @mouseover="showPlayerTooltip($event, name)"
-          @mouseout="hidePlayerTooltip"
-        ></a>
-      </div>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <div>
+    <canvas
+      ref="canvas"
+      @click="handleClick"
+      @mousemove="handleMouseMove"
+    ></canvas>
+    <div
+      v-if="hoveredPlayer"
+      class="tooltip"
+      :style="{ top: tooltipY + 'px', left: tooltipX + 'px' }"
+    >
+      {{ players.Name[hoveredPlayer] }}
     </div>
   </div>
 </template>
-<script>
 
+<script>
 export default {
-  name: 'MapPage',
-  props: ['visualization_data'],
-  data () {
+  name: "MapCanvas",
+  props: ["visualization_data", "scrollY"],
+  data() {
     return {
-      loading: false,
       width: 0,
       height: 0,
       players: {},
-      showTooltip: false,
+      ctx: null,
+      hoveredPlayer: null,
       tooltipX: 0,
       tooltipY: 0,
-      tooltipContent: '',
-    }
+    };
   },
   created() {
     const parsedData = JSON.parse(this.visualization_data);
     this.width = parsedData.canvas_width;
     this.height = parsedData.canvas_height;
     this.players = parsedData.players;
-    for(var player in this.players){
-      console.log(player)
+  },
+  mounted() {
+    this.$refs.canvas.width = this.width;
+    this.$refs.canvas.height = this.height;
+    this.ctx = this.$refs.canvas.getContext("2d");
+    this.drawPlayers();
+    if (this.scrollY) {
+      window.scrollTo(0, this.scrollY);
+    }else{
+      window.scrollTo(0, 0);
     }
   },
+
   methods: {
-    // getPlayerLink (player) {
-    //   return `/players/${player.Name}`
-    // }
-    showPlayerTooltip(event, name) {
-      this.showTooltip = true;
-      this.tooltipX = event.pageX + 10;
-      this.tooltipY = event.pageY + 10;
-      this.tooltipContent = name;
+    drawPlayers() {
+      for (const key in this.players.Name) {
+        const x = this.players.point0[key];
+        const y = this.players.point1[key];
+        this.drawPlayer(x, y);
+      }
     },
-    layerTooltip() {
-      this.showTooltip = false;
+    drawPlayer(x, y, color = "grey") {
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, 5, 0, Math.PI * 2);
+      this.ctx.fillStyle = color;
+      this.ctx.fill();
+      this.ctx.closePath();
     },
-  }
-}
+    handleClick() {
+      if (this.hoveredPlayer) {
+        const playerId = this.hoveredPlayer;
+        const scrollY = window.scrollY;
+        this.$router.push({
+          name: "PlayerPage",
+          params: { id: playerId },
+          query: { visualization_data: this.visualization_data, scrollY: scrollY,},
+        });
+      }
+    },
+    handleMouseMove(event) {
+      const rect = this.$refs.canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      let foundPlayer = false;
+      for (const key in this.players.Name) {
+        const playerX = this.players.point0[key];
+        const playerY = this.players.point1[key];
+        const distance = Math.sqrt(
+          Math.pow(x - playerX, 2) + Math.pow(y - playerY, 2)
+        );
+
+        if (distance <= 5) {
+          foundPlayer = true;
+          if (this.hoveredPlayer !== key) {
+            if (this.hoveredPlayer) {
+              const prevX = this.players.point0[this.hoveredPlayer];
+              const prevY = this.players.point1[this.hoveredPlayer];
+              this.drawPlayer(prevX, prevY);
+            }
+            this.hoveredPlayer = key;
+            this.drawPlayer(playerX, playerY, "red");
+            this.tooltipX = event.pageX + 10;
+            this.tooltipY = event.pageY + 10;
+          }
+          break;
+        }
+      }
+
+      if (!foundPlayer && this.hoveredPlayer) {
+        const prevX = this.players.point0[this.hoveredPlayer];
+        const prevY = this.players.point1[this.hoveredPlayer];
+        this.drawPlayer(prevX, prevY);
+        this.hoveredPlayer = null;
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-  .map-container {
-    background-color: white;
-  }
-
-  .tooltip {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    border-radius: 5px;
-    padding: 5px;
-    z-index: 100;
-  }
-
-  @keyframes glowing {
-    0% {
-      box-shadow: 0 0 5px #0000ff, 0 0 10px #0000ff, 0 0 20px #0000ff, 0 0 30px #0000ff;
-    }
-    50% {
-      box-shadow: 0 0 10px #0000ff, 0 0 20px #0000ff, 0 0 30px #0000ff, 0 0 40px #0000ff;
-    }
-    100% {
-      box-shadow: 0 0 5px #0000ff, 0 0 10px #0000ff, 0 0 20px #0000ff, 0 0 30px #0000ff;
-    }
-  }
-
-  .glowing {
-    animation: glowing 2s infinite;
-    display: block;
+.tooltip {
+  font-family: 'Orbitron', sans-serif;
+  position: absolute;
+  background-color: rgba(0,0, 0, 0.7);
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+  z-index: 100;
   }
 </style>

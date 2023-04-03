@@ -10,16 +10,28 @@ const routes = [
     component: HomePage,
   },
   {
-    path: "/map/:visualization_data",
+    path: "/map",
     name: "MapPage",
     component: MapPage,
-    props: true,
+    props: route => {
+      const props = { visualization_data: route.query.visualization_data };
+      if (route.query.scrollY) {
+        props.scrollY = Number(route.query.scrollY);
+      }
+      return props;
+    },
   },
   {
-    path: '/player/:name',
+    path: '/players/:id',
     name: 'PlayerPage',
     component: PlayerPage,
-    props: true,
+    props: route => {
+      const params = {
+        id: route.params.id,
+        visualization_data: route.query.visualization_data,
+      };
+      return params;
+    },
   },
 ];
 

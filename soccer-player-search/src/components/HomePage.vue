@@ -2,7 +2,7 @@
 <template>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <div>
-    <ParallaxBackground />
+    <parallax-background :scroll-y="scrollY"></parallax-background>
     <div class="home-page">
       <div class="header">
         <h1 class="title animated fadeInDown">
@@ -53,13 +53,18 @@ export default {
     return {
       bottom: "",
       top: "",
-      position: ""
+      position: "",
+      scrollY: 0,
     }
   },
-  
+  mounted() {
+    window.addEventListener("scroll", this.onScroll);
+  },
+  beforeUnmount() {
+    window.removeEventListener("scroll", this.onScroll);
+  },
   methods: {
     async submitForm() {
-
       try {
         const response = await axios.post('http://localhost:5000/', {
           bottom: this.bottom,
@@ -69,14 +74,18 @@ export default {
         let visualization_data = JSON.stringify(response.data)
         this.$router.push({
           name: 'MapPage',
-          params: {visualization_data: visualization_data}
+          query: {visualization_data: visualization_data}
         });
       } catch (error) {
         console.error(error);
       }
       
     },
+    onScroll() {
+      this.scrollY = window.scrollY;
+    },
   },
+  
 };
 </script>
 

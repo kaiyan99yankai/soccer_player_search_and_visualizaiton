@@ -1,8 +1,7 @@
 <template>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <div class="parallax-container">
     <div class="parallax-layer layer1">
-      <span class="scroll-text">Scroll down to search for players</span>
+      <span class="scroll-text" :style="{ opacity: opacity }">Scroll down to search for players</span>
     </div>
     <div class="parallax-layer layer2"></div>
   </div>
@@ -11,28 +10,21 @@
 <script>
 export default {
   name: 'ParallaxBackground',
-  methods: {
-    onScroll() {
-        const scrollTop = window.scrollY;
-        const maxOpacity = 1;
-        const minOpacity = 0;
-        const fadeDistance = 300; // 淡出距离，可根据需要调整
-
-        const opacity = Math.max(minOpacity, maxOpacity - scrollTop / fadeDistance);
-
-        const textElement = this.$el.querySelector(".scroll-text");
-        if (textElement) {
-            textElement.style.opacity = opacity;
-        }
+  props: {
+    scrollY: {
+      type: Number,
+      required: true,
     },
   },
-  mounted() {
-    window.addEventListener("scroll", this.onScroll);
+  computed: {
+    opacity() {
+      const maxOpacity = 1;
+      const minOpacity = 0;
+      const fadeDistance = 700;
+      return Math.max(minOpacity, maxOpacity - this.scrollY / fadeDistance);
+    },
   },
-  beforeUnmount() {
-    window.removeEventListener("scroll", this.onScroll);
-  },
-}
+};
 </script>
 
 <style scoped>
@@ -65,7 +57,6 @@ export default {
 }
 
 .scroll-text {
-font-family: 'Orbitron', sans-serif;
   font-size: 80px;
   text-align: center;
   color: #fff;
