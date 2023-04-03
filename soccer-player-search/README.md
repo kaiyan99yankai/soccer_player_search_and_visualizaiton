@@ -1,8 +1,8 @@
-# soccer-player-search
+### Open two terminals for the two servers
 
-## Project setup
+### Run server.py in pipenv
 ```
-npm install
+pipenv run python server.py
 ```
 
 ### Compiles and hot-reloads for development
@@ -13,11 +13,6 @@ npm run serve
 ### Compiles and minifies for production
 ```
 npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
 ```
 
 ### Customize configuration
