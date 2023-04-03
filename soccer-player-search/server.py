@@ -1,15 +1,11 @@
-from flask import Flask, request, render_template, redirect, url_for, jsonify
-import json
-from celery import Celery
+from flask import Flask, request, send_from_directory, jsonify, g
 import sqlite3 as sql
-from flask import g
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.decomposition import PCA
-import math
+import math, sys, os, json
 import numpy as np
-import sys
 from flask_cors import CORS
 
 DATABASE = './players_20.db'
@@ -75,7 +71,7 @@ class NumpyJSONEncoder(json.JSONEncoder):
             return obj.tolist()
         return super(NumpyJSONEncoder, self).default(obj)
 
-@app.route("/", methods=['Get', 'POST'])
+@app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         #search page of the players
@@ -86,13 +82,7 @@ def index():
 
         return jsonify(data)
     
-    return render_template("index.html")
-
-@app.route("/map")
-def map():
-    data = request.args.get('data')
-    print('go to map')
-    return render_template("map.html", width=data['canvas_width'], height=data['canvas_height'], playerdata=data['players'])
+    return catch_all('')
 
 
 @app.route("/player", methods=["POST"])
@@ -111,7 +101,16 @@ def player():
         # print(res[i])
     return jsonify(playerdata)
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    if os.path.isfile('dist/' + path):
+        return send_from_directory('dist', path)
+    else:
+        return send_from_directory('dist', 'index.html')
 
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')

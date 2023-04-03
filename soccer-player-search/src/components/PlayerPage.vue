@@ -41,7 +41,7 @@ export default {
     }
     
     try {
-      this.detailData = await axios.post('http://localhost:5000/player', {
+      this.detailData = await axios.post('http://127.0.0.1:5000/player', {
         name: this.playerData['Name'],
         age: this.playerData['Age']
       });
