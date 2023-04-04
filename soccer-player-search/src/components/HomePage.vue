@@ -66,7 +66,7 @@ export default {
   methods: {
     async submitForm() {
       try {
-        const response = await axios.post('http://127.0.0.1:5000/', {
+        const response = await axios.post('/', {
           bottom: this.bottom,
           top: this.top,
           position: this.position,

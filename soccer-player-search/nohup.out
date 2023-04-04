@@ -1,0 +1,24 @@
+ * Serving Flask app 'server.py'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.16.59:5000
+[33mPress CTRL+C to quit[0m
+35.2.141.9 - - [03/Apr/2023 21:06:02] "GET / HTTP/1.1" 200 -
+35.2.141.9 - - [03/Apr/2023 21:06:02] "GET /static/css/app.8440e41f.css HTTP/1.1" 200 -
+35.2.141.9 - - [03/Apr/2023 21:06:02] "GET /static/js/chunk-vendors.211f9214.js HTTP/1.1" 200 -
+35.2.141.9 - - [03/Apr/2023 21:06:02] "GET /static/js/app.301f56bc.js HTTP/1.1" 200 -
+35.2.141.9 - - [03/Apr/2023 21:06:02] "GET /static/img/bg1.15b2f3b4.png HTTP/1.1" 200 -
+35.2.141.9 - - [03/Apr/2023 21:12:50] "[36mGET / HTTP/1.1[0m" 304 -
+35.2.141.9 - - [03/Apr/2023 21:12:50] "[36mGET /static/js/chunk-vendors.211f9214.js HTTP/1.1[0m" 304 -
+35.2.141.9 - - [03/Apr/2023 21:12:50] "[36mGET /static/css/app.8440e41f.css HTTP/1.1[0m" 304 -
+35.2.141.9 - - [03/Apr/2023 21:12:50] "[36mGET /static/js/app.301f56bc.js HTTP/1.1[0m" 304 -
+35.2.141.9 - - [03/Apr/2023 21:12:50] "[36mGET /static/img/bg1.15b2f3b4.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [03/Apr/2023 21:13:02] "GET / HTTP/1.0" 200 -
+127.0.0.1 - - [03/Apr/2023 21:14:47] "GET / HTTP/1.0" 200 -
+35.2.141.9 - - [03/Apr/2023 21:16:08] "[36mGET / HTTP/1.1[0m" 304 -
+35.2.141.9 - - [03/Apr/2023 21:16:08] "[36mGET /static/css/app.8440e41f.css HTTP/1.1[0m" 304 -
+35.2.141.9 - - [03/Apr/2023 21:16:08] "[36mGET /static/js/chunk-vendors.211f9214.js HTTP/1.1[0m" 304 -
+35.2.141.9 - - [03/Apr/2023 21:16:08] "[36mGET /static/js/app.301f56bc.js HTTP/1.1[0m" 304 -
+35.2.141.9 - - [03/Apr/2023 21:16:08] "[36mGET /static/img/bg1.15b2f3b4.png HTTP/1.1[0m" 304 -
