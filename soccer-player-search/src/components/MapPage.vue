@@ -1,6 +1,8 @@
 <template>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <NavigationBar />
   <div>
+    
     <canvas
       ref="canvas"
       @click="handleClick"
@@ -17,8 +19,12 @@
 </template>
 
 <script>
+import NavigationBar from "@/components/NavigationBar.vue";
 export default {
   name: "MapCanvas",
+  components: {
+    NavigationBar,
+  },
   props: ["visualization_data", "scrollY"],
   data() {
     return {
@@ -56,12 +62,41 @@ export default {
         const y = this.players.point1[key];
         this.drawPlayer(x, y);
       }
+      this.drawConnections();
     },
     drawPlayer(x, y, color = "grey") {
       this.ctx.beginPath();
       this.ctx.arc(x, y, 5, 0, Math.PI * 2);
       this.ctx.fillStyle = color;
       this.ctx.fill();
+      this.ctx.closePath();
+    },
+    drawConnections() {
+      if (!this.players.nei) {
+        return;
+      }
+
+      for (const key in this.players.nei) {
+        const connectedIndexes = this.players.nei[key];
+
+        for (const connectedIndex of connectedIndexes) {
+          const x1 = this.players.point0[key];
+          const y1 = this.players.point1[key];
+          console.log(connectedIndex)
+          const x2 = this.players.point0[connectedIndex];
+          const y2 = this.players.point1[connectedIndex];
+
+          this.drawLine(x1, y1, x2, y2);
+        }
+      }
+    },
+    drawLine(x1, y1, x2, y2, color = "blue", lineWidth = 1) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(x1, y1);
+      this.ctx.lineTo(x2, y2);
+      this.ctx.strokeStyle = color;
+      this.ctx.lineWidth = lineWidth;
+      this.ctx.stroke();
       this.ctx.closePath();
     },
     handleClick() {

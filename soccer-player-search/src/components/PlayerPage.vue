@@ -1,12 +1,28 @@
 <template>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <NavigationBar />
   <div class="container">
     <div class="player-card">
       <h1 class="name">{{ playerData.Name }}</h1>
       <ul class="details">
-        <li v-for="(value, key) in detailData.data" :key="key">
+        <li v-for="(value, key) in filteredDetails" :key="key">
           <div class="key">{{ key }}:</div>
-          <div class="value">{{ value }}</div>
+          <div class="value" v-if="key !== 'nei'">{{ value }}</div>
+          <div class="value" v-else>
+            <template v-if="key === 'nei'">
+              <router-link
+                v-for="(neighbor, index) in value" :key="index"
+                :to="{
+                  name: 'PlayerPage',
+                  params: { id: neighbor.index },
+                  query: { visualization_data: this.$route.query.visualization_data },
+                }"
+              >
+                {{ neighbor.name }}
+              </router-link>
+            
+            </template>
+          </div>
         </li>
       </ul>
       <router-link
@@ -23,9 +39,13 @@
 </template>
 
 <script>
+import NavigationBar from "@/components/NavigationBar.vue";
 import axios from "axios";
 export default {
   name: "PlayerPage",
+  components: {
+    NavigationBar,
+  },
   props: ['id'],
   data() {
     return {
@@ -33,21 +53,70 @@ export default {
       detailData: {},
     };
   },
-  async created() {
-    const players = JSON.parse(this.$route.query.visualization_data).players;
-    for (var key in players) {
-      if (key === 'point0' || key === 'point1') continue;
-      this.playerData[key] = players[key][this.id];
+  async created(){
+      const newId = this.id;
+      const players = JSON.parse(this.$route.query.visualization_data).players;
+      for (var key in players) {
+        if (key === 'point0' || key === 'point1') continue;
+        this.playerData[key] = players[key][newId];
+      }
+      if (players.nei && players.nei[newId]) {
+        this.playerData['nei'] = players.nei[newId];
+      } else {
+        this.playerData['nei'] = [];
+      }
+      try {
+        this.detailData = await axios.post('http://127.0.0.1:5000/player', {
+          name: this.playerData['Name'],
+          age: this.playerData['Age']
+        });
+      } catch (error) {
+        console.error(error);
+      }
+  },
+  watch: {
+    async id() {
+      const newId = this.id;
+      const players = JSON.parse(this.$route.query.visualization_data).players;
+      for (var key in players) {
+        if (key === 'point0' || key === 'point1') continue;
+        this.playerData[key] = players[key][newId];
+      }
+      if (players.nei && players.nei[newId]) {
+        this.playerData['nei'] = players.nei[newId];
+      } else {
+        this.playerData['nei'] = [];
+      }
+      try {
+        this.detailData = await axios.post('http://127.0.0.1:5000/player', {
+          name: this.playerData['Name'],
+          age: this.playerData['Age']
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
-    
-    try {
-      this.detailData = await axios.post('/player', {
-        name: this.playerData['Name'],
-        age: this.playerData['Age']
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  },
+  computed: {
+    filteredDetails() {
+      const filtered = {};
+      for (const key in this.detailData.data) {
+        if (key !== "isAM" && key !== "isD" && key !== "isGK" && key !== "isM" && key !== "isST") {
+          filtered[key] = this.detailData.data[key];
+        }
+      }
+      if(this.playerData['nei'].length>0){
+        filtered['nei'] = [];
+        for (const ind of this.playerData['nei']) {
+          filtered['nei'].push({ index: ind, name: JSON.parse(this.$route.query.visualization_data).players['Name'][ind] });
+          console.log(JSON.parse(this.$route.query.visualization_data).players['Name'][ind]);
+        }
+        
+      }
+      
+
+      return filtered;
+    },
   },
 };
 </script>

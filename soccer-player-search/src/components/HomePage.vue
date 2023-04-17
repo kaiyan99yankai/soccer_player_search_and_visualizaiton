@@ -1,49 +1,38 @@
-
 <template>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   <div>
     <parallax-background :scroll-y="scrollY"></parallax-background>
     <div class="home-page">
       <div class="header">
-        <h1 class="title animated fadeInDown">
-          Soccer Player Search Engine
-        </h1>
       </div>
-      <div class="search-container">
-        <div
-          class="login-box"
-          :style="{ top: `${top}px`, left: `${left}px`, position: position }"
-        >
-          <form @submit.prevent="submitForm">
-            <div class="user-box">
-              <input type="number" id="bottom" v-model.number="bottom" required />
-              <label>Bottom</label>
-            </div>
-            <div class="user-box">
-              <input type="number" id="top" v-model.number="top" required />
-              <label>Top</label>
-            </div>
-            <div class="user-box">
-              <input v-model="position" required />
-              <label>Position</label>
-            </div>
-            <button type="submit">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              Search
-            </button>
-          </form>
-        </div>
+      <div class="sections-container">
+        <section v-for="(section, index) in sections" :key="index" :class="{ 'white-background': index === 0, 'grey-background': index === 1 }" class="section">
+          <div class="image-container">
+            <router-link :to="section.link">
+              <div class="section-image">
+                <img
+                  :src="require(`./${section.image}`)"
+                  alt="Section Image"
+                  class="image"
+                  @mouseover="enlargeImage"
+                  @mouseout="resetImage"
+                />
+              </div>
+            </router-link>
+          </div>
+          <div class="section-text">
+            <h2>{{ section.title }}</h2>
+            <p>{{ section.description }}</p>
+          </div>
+        </section>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import ParallaxBackground from './ParallaxBackground.vue'
+
 export default {
   name: "HomePage",
   components: {
@@ -51,11 +40,22 @@ export default {
   },
   data() {
     return {
-      bottom: "",
-      top: "",
-      position: "",
+      sections: [
+        {
+          title: "Ability Node Graph",
+          description: "Use dimension reduction method to show the selected player in 2D graph given by their ability.",
+          image: 'images.jpeg',
+          link: { name: "Search1" },
+        },
+        {
+          title: "Similarity Node Graph",
+          description: "Use link between player nodes to show the similarity between them",
+          image: "graph.png",
+          link: { name: "Search2" },
+        },
+      ],
       scrollY: 0,
-    }
+    };
   },
   mounted() {
     window.addEventListener("scroll", this.onScroll);
@@ -64,54 +64,104 @@ export default {
     window.removeEventListener("scroll", this.onScroll);
   },
   methods: {
-    async submitForm() {
-      try {
-        const response = await axios.post('/', {
-          bottom: this.bottom,
-          top: this.top,
-          position: this.position,
-      });
-        let visualization_data = JSON.stringify(response.data)
-        this.$router.push({
-          name: 'MapPage',
-          query: {visualization_data: visualization_data}
-        });
-      } catch (error) {
-        console.error(error);
-      }
-      
+    enlargeImage(event) {
+      event.target.style.transform = "scale(1.1)";
+    },
+    resetImage(event) {
+      event.target.style.transform = "scale(1)";
     },
     onScroll() {
       this.scrollY = window.scrollY;
     },
   },
-  
 };
 </script>
 
 <style scoped>
-    .home-page {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    
-    .header {
-      margin-bottom: 2rem;
-      font-family: 'Orbitron', sans-serif;
-    }
-    
-    .title {
-      font-size: 3rem;
-      color: #333;
-    }
-    
+.home-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    @media screen and (max-width: 768px) {
-        .form-container {
-            width: 100%;
-        }
-    }
-    </style>
+.header {
+  margin-bottom: 2rem;
+  font-family: "Orbitron", sans-serif;
+}
+
+.title {
+  font-size: 3rem;
+  color: #333;
+}
+
+.sections-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.section {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  justify-content: center;
+}
+
+.section-image {
+  margin: auto;
+  width: 50%;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.5s ease-out;
+}
+
+.image-container{
+  width: 50%;
+  height: auto;
+}
+
+
+.section-text {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  font-size: 1.5rem;
+}
+
+.white-background {
+  background-color: white;
+}
+
+.grey-background {
+  background-color: #f2f2f2;
+}
+
+.image {
+  width: 100%;
+}
+
+.enlarged-image {
+  transform: scale(1.1);
+}
+
+@media screen and (max-width: 768px) {
+  .section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section-image {
+    width: 80%;
+  }
+
+  .section-text {
+    width: 80%;
+    margin-top: 1rem;
+  }
+}
+
+</style>
